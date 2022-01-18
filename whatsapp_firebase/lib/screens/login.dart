@@ -2,11 +2,13 @@
 
 import 'dart:typed_data';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:whatsapp_firebase/utils/color_pallet.dart';
+import 'package:whatsapp_firebase/models/model.dart';
 
 class Login extends StatefulWidget {
   const Login({Key? key}) : super(key: key);
@@ -22,6 +24,7 @@ class _LoginState extends State<Login> {
   bool _userRegister = false;
   FirebaseAuth _auth = FirebaseAuth.instance;
   FirebaseStorage _storage = FirebaseStorage.instance;
+  FirebaseFirestore _firestore = FirebaseFirestore.instance;
   Uint8List? _selectedImageArchive;
 
   _selectImage() async {
@@ -34,15 +37,23 @@ class _LoginState extends State<Login> {
     });
   }
 
-  _uploadImage(String userId) {
+  _uploadImage(LoggedUser loggedUser) {
     Uint8List? selectedArchive = _selectedImageArchive;
     if (selectedArchive != null) {
-      Reference profileImageRef = _storage.ref("images/profile/$userId.jpg");
+      Reference profileImageRef =
+          _storage.ref("images/profile/${loggedUser.userId}.jpg");
       UploadTask uploadTask = profileImageRef.putData(selectedArchive);
 
       uploadTask.whenComplete(() async {
         String linkImage = await uploadTask.snapshot.ref.getDownloadURL();
-        print("$linkImage");
+        loggedUser.imageUrl = linkImage;
+
+        final userRef = _firestore.collection("users");
+        userRef.doc(loggedUser.userId).set(loggedUser.toMap()).then(
+          (value) {
+            Navigator.pushReplacementNamed(context, "/home");
+          },
+        );
       });
     }
   }
@@ -64,7 +75,8 @@ class _LoginState extends State<Login> {
                 //Após criar o usuário, vamos fazer o upload da imagem:
                 String? userId = auth.user?.uid;
                 if (userId != null) {
-                  _uploadImage(userId);
+                  LoggedUser loggedUser = LoggedUser(userId, name, email);
+                  _uploadImage(loggedUser);
                 }
               });
             } else {
@@ -77,8 +89,7 @@ class _LoginState extends State<Login> {
           await _auth
               .signInWithEmailAndPassword(email: email, password: password)
               .then((auth) {
-            String? email = auth.user?.email;
-            print("Email cadastrado: $email");
+            Navigator.pushReplacementNamed(context, "/home");
           });
         }
       } else {
