@@ -1,10 +1,9 @@
 // ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables
 
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:whatsapp_firebase/components/chats_list.dart';
 import 'package:whatsapp_firebase/components/contacts_list.dart';
-import 'package:whatsapp_firebase/models/logged_user.dart';
 
 class HomeMobile extends StatefulWidget {
   const HomeMobile({Key? key}) : super(key: key);
@@ -52,8 +51,9 @@ class _HomeMobileState extends State<HomeMobile> {
         body: SafeArea(
           child: TabBarView(
             children: [
-              Center(
-                child: Text("Conversas"),
+              Padding(
+                padding: EdgeInsets.symmetric(horizontal: 8),
+                child: ChatsList(),
               ),
               Padding(
                 padding: EdgeInsets.symmetric(horizontal: 8),

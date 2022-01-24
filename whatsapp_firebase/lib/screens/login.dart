@@ -27,13 +27,13 @@ class _LoginState extends State<Login> {
   FirebaseFirestore _firestore = FirebaseFirestore.instance;
   Uint8List? _selectedImageArchive;
 
-  _verifyIfUserIsLoggedIn() async {
-    User? loggedInUser = await _auth.currentUser;
+  // _verifyIfUserIsLoggedIn() {
+  //   User? loggedInUser = _auth.currentUser;
 
-    if (loggedInUser != null) {
-      Navigator.pushReplacementNamed(context, "/home");
-    }
-  }
+  //   if (loggedInUser != null) {
+  //     Navigator.pushReplacementNamed(context, "/home");
+  //   }
+  // }
 
   _selectImage() async {
     //Seleciona o arquivo:
@@ -55,6 +55,9 @@ class _LoginState extends State<Login> {
       uploadTask.whenComplete(() async {
         String linkImage = await uploadTask.snapshot.ref.getDownloadURL();
         loggedUser.imageUrl = linkImage;
+
+        await _auth.currentUser?.updateDisplayName(loggedUser.name);
+        await _auth.currentUser?.updatePhotoURL(loggedUser.imageUrl);
 
         final userRef = _firestore.collection("users");
         userRef.doc(loggedUser.userId).set(loggedUser.toMap()).then(
@@ -108,11 +111,11 @@ class _LoginState extends State<Login> {
     }
   }
 
-  @override
-  void initState() {
-    super.initState();
-    _verifyIfUserIsLoggedIn();
-  }
+  // @override
+  // void initState() {
+  //   super.initState();
+  //   _verifyIfUserIsLoggedIn();
+  // }
 
   @override
   Widget build(BuildContext context) {

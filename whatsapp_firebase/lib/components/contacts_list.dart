@@ -80,7 +80,10 @@ class _ContactsListState extends State<ContactsList> {
                       LoggedUser user = usersList[index];
 
                       return ListTile(
-                        onTap: () {},
+                        onTap: () {
+                          Navigator.pushReplacementNamed(context, "/messages",
+                              arguments: user);
+                        },
                         leading: CircleAvatar(
                           radius: 25,
                           backgroundColor: Colors.grey,

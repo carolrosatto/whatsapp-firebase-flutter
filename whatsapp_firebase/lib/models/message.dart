@@ -1,23 +1,20 @@
-class LoggedUser {
+class Message {
   String userId;
-  String name;
-  String email;
-  String imageUrl;
+  String text;
+  String date;
 
-  LoggedUser(
+  Message(
     this.userId,
-    this.name,
-    this.email, {
-    this.imageUrl = "",
-  });
+    this.text,
+    this.date,
+  );
 
 //ToMap é necessário para conseguir salvar no Firebase no formato correto
   Map<String, dynamic> toMap() {
     Map<String, dynamic> map = {
       "userId": this.userId,
-      "name": this.name,
-      "email": this.email,
-      "imageUrl": this.imageUrl,
+      "text": this.text,
+      "date": this.date,
     };
     return map;
   }
