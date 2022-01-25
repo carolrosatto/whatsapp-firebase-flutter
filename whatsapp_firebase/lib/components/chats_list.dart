@@ -1,5 +1,3 @@
-// ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables
-
 import 'dart:async';
 
 import 'package:cached_network_image/cached_network_image.dart';
@@ -18,6 +16,7 @@ class ChatsList extends StatefulWidget {
 class _ChatsListState extends State<ChatsList> {
   FirebaseAuth _auth = FirebaseAuth.instance;
   FirebaseFirestore _firestore = FirebaseFirestore.instance;
+
   late LoggedUser _senderUser;
   StreamController _streamController =
       StreamController<QuerySnapshot>.broadcast();
@@ -27,7 +26,7 @@ class _ChatsListState extends State<ChatsList> {
     final stream = _firestore
         .collection("chats")
         .doc(_senderUser.userId)
-        .collection("last_messages")
+        .collection("last messages")
         .snapshots();
 
     _streamChats = stream.listen((data) {
@@ -131,7 +130,7 @@ class _ChatsListState extends State<ChatsList> {
                       subtitle: Text(
                         lastMessage,
                         style: TextStyle(
-                          fontSize: 14,
+                          fontSize: 16,
                           color: Colors.grey,
                         ),
                         maxLines: 2,
